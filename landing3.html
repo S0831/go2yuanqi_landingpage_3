@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Go.2-Yuanqi · 你的校园元气补给站</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              mint: '#B2F0E5',
+              bubble: '#E0F7FA',
+              brand: '#00C29A', 
+              brandHover: '#00A885',
+              midnight: '#0F172A',
+            },
+            boxShadow: {
+              glow: '0 0 40px rgba(0, 194, 154, 0.3)',
+              card: '0 8px 32px 0 rgba(0, 0, 0, 0.3)',
+            },
+            animation: {
+              'float': 'float 6s ease-in-out infinite',
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'spin-slow': 'spin 12s linear infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-20px)' },
+              }
+            }
+          },
+        },
+      };
+    </script>
+    <style>
+      /* 自定义滚动条 */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #0F172A; }
+      ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #475569; }
+      
+      /* 玻璃拟态通用类 */
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      
+      .glass-card:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(178, 240, 229, 0.3);
+        transform: translateY(-4px);
+      }
+
+      /* 关于我们高亮特效 */
+      .highlight-section {
+        background: linear-gradient(145deg, rgba(0, 194, 154, 0.05), rgba(255, 255, 255, 0.02));
+        border: 1px solid rgba(0, 194, 154, 0.3);
+        box-shadow: 0 0 30px rgba(0, 194, 154, 0.05);
+      }
+
+      /* 语言切换按钮样式 */
+      .lang-switch {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 50;
+      }
+    </style>
+  </head>
+  <body class="bg-[#05070F] text-slate-100 min-h-screen font-sans antialiased selection:bg-brand selection:text-white">
+    
+    <!-- 语言切换按钮 -->
+    <div class="lang-switch">
+      <button onclick="toggleLanguage()" class="glass-panel px-4 py-2 rounded-full text-sm font-bold text-mint hover:bg-white/10 transition flex items-center gap-2 shadow-glow">
+        <span class="text-lg">🌐</span>
+        <span id="lang-text">EN / 中文</span>
+      </button>
+    </div>
+
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+      <div class="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-brand/20 rounded-full blur-[120px] opacity-40 animate-float"></div>
+      <div class="absolute bottom-[10%] right-[-5%] w-[30vw] h-[30vw] bg-blue-500/20 rounded-full blur-[100px] opacity-30" style="animation-delay: -2s"></div>
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto px-6 py-12 md:py-20 space-y-24">
+      
+      <header class="space-y-8 text-center flex flex-col items-center pt-8">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition cursor-default">
+          <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+          <p class="uppercase tracking-widest text-mint text-xs font-bold" data-i18n="version">Go.2-Yuanqi Alpha</p>
+        </div>
+        
+        <h1 class="text-4xl md:text-6xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 drop-shadow-sm max-w-4xl">
+          <span data-i18n="hero-title-1">售货机“开盲盒”？</span><span class="text-brand block md:inline" data-i18n="hero-title-2">达咩！🙅</span>
+          <br class="hidden md:block" />
+          <span class="text-3xl md:text-5xl mt-4 block font-medium text-slate-300" data-i18n="hero-subtitle">先瞅一眼再冲，告别“大冤种”</span>
+        </h1>
+        
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed" data-i18n="hero-desc">
+          还在满 XJTLU 校园“随缘”找快乐水？Go.2-Yuanqi 让你秒看位置、甚至还能在线“许愿”你最想要的款。
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 pt-4 items-center">
+          <a href="#feedback" class="w-full sm:w-auto bg-brand hover:bg-brandHover text-white font-bold px-8 py-4 rounded-full shadow-glow transition-all transform hover:scale-105 flex items-center justify-center gap-2">
+             <span data-i18n="btn-try">抢先体验</span>
+             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+          </a>
+          
+          <a href="#features" class="w-full sm:w-auto px-8 py-4 rounded-full border border-white/10 hover:bg-white/5 text-slate-300 font-semibold transition-colors text-center" data-i18n="btn-learn">
+            了解更多
+          </a>
+
+          <!-- GitHub Button -->
+          <a href="https://github.com/S0831/miniprogram-2_open" target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-full bg-[#24292e] hover:bg-[#2f363d] text-white font-semibold transition-all flex items-center justify-center gap-2 border border-white/10">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>
+            <span>GitHub</span>
+          </a>
+        </div>
+      </header>
+
+      <section id="features" class="grid md:grid-cols-2 gap-16 items-center">
+        <div class="space-y-8 order-2 md:order-1">
+          <div class="space-y-2">
+            <h2 class="text-3xl md:text-4xl font-bold text-white">
+                <span data-i18n="step-title-1">简单三步，</span><br/>
+                <span class="text-brand" data-i18n="step-title-2">拿回你的“零食自由”</span>
+            </h2>
+            <p class="text-slate-400" data-i18n="step-desc">不再为了一瓶水跑断腿，我们把主动权还给你～</p>
+          </div>
+          
+          <div class="space-y-5">
+            <article class="glass-panel rounded-2xl p-6 transition duration-300 glass-card cursor-default">
+              <h3 class="text-xl font-bold flex items-center gap-4 text-white mb-2">
+                <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-xl">📍</div>
+                <span data-i18n="card1-title">锁定坐标</span>
+              </h3>
+              <p class="text-slate-400 pl-14 text-sm leading-relaxed" data-i18n="card1-desc">不用再像无头苍蝇一样乱撞！地图一开，最近的机子在哪？统统一秒 get～</p>
+            </article>
+            
+            <article class="glass-panel rounded-2xl p-6 transition duration-300 glass-card cursor-default">
+              <h3 class="text-xl font-bold flex items-center gap-4 text-white mb-2">
+                <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-xl">👀</div>
+                <span data-i18n="card2-title">拒绝跑空</span>
+              </h3>
+              <p class="text-slate-400 pl-14 text-sm leading-relaxed" data-i18n="card2-desc">出发前看一眼状态！想喝的饮料是否售罄？提前预知这台机子有没有你心仪的“味道”～</p>
+            </article>
+            
+            <article class="glass-panel rounded-2xl p-6 transition duration-300 glass-card cursor-default">
+              <h3 class="text-xl font-bold flex items-center gap-4 text-white mb-2">
+                <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-xl">📝</div>
+                <span data-i18n="card3-title">许愿上新</span>
+              </h3>
+              <p class="text-slate-400 pl-14 text-sm leading-relaxed" data-i18n="card3-desc">入冬是否想喝香芋口味产品？直接 @ 我们，热门款必须给大家安排上！</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="relative order-1 md:order-2 flex justify-center">
+          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-brand/20 rounded-full blur-[60px] -z-10"></div>
+          
+          <div class="device-shell transform rotate-[-2deg] hover:rotate-0 transition duration-500">
+            <div class="device-notch"></div>
+            <div class="device-screen relative bg-gray-900 overflow-y-auto hide-scrollbar">
+                <!-- 这里的图片路径保持不变 -->
+                <img src="./long-screenshot.jpg/" alt="App Interface" class="w-full h-auto" />
+              </div>
+              
+              <style>
+                /* 隐藏手机屏幕内的滚动条，看起来更像原生App */
+                .hide-scrollbar::-webkit-scrollbar {
+                  display: none;
+                }
+                .hide-scrollbar {
+                  -ms-overflow-style: none;
+                  scrollbar-width: none;
+                }
+              </style>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="relative highlight-section rounded-[40px] p-10 md:p-16 text-center overflow-hidden">
+        <div class="absolute -top-24 -left-24 w-64 h-64 bg-brand/10 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -right-24 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl"></div>
+        
+        <div class="relative z-10 space-y-6">
+            <p class="text-mint font-bold tracking-[0.3em] uppercase text-sm" data-i18n="about-us">关于我们</p>
+            <h2 class="text-3xl md:text-4xl font-bold text-white">
+                <span data-i18n="about-title-1">咱也是 XJTLU 的</span>
+                <span class="relative inline-block">
+                   <span data-i18n="about-title-2">（梦幻联动了）</span>
+                   <span class="absolute bottom-1 left-0 w-full h-3 bg-brand/30 -skew-x-12 -z-10"></span>
+                </span>
+            </h2>
+            <p class="text-slate-200 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto" data-i18n="about-desc">
+                我们希望用技术提升校园的便利性，让自动售货机变得<span class="text-white font-semibold">更智能、更快捷、也更有趣～</span> 
+                Go.2-Yuanqi 是我们为此迈出的第一步。
+            </p>
+            <div class="pt-4">
+                <p class="text-sm font-mono text-brand/80 tracking-wide border-t border-brand/20 inline-block pt-4 px-6">
+                    Crafted by XJTLU students — made for everyone to enjoy.
+                </p>
+            </div>
+        </div>
+      </section>
+
+      <section class="glass-panel rounded-[40px] p-8 md:p-12">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <p class="text-xs font-bold tracking-[0.4em] text-brand mb-3 uppercase">Feature Highlights</p>
+          <h2 class="text-3xl font-bold text-white" data-i18n="highlight-title">核心功能一图看懂</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="glass-panel p-8 rounded-2xl glass-card transition-all flex flex-col items-center text-center">
+            <div class="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center text-3xl mb-6">📡</div>
+            <p class="text-xl font-bold text-white mb-3" data-i18n="hl-1-title">实时地图</p>
+            <p class="text-sm text-slate-400 leading-relaxed" data-i18n="hl-1-desc">让购买更加便捷！锁定售货机坐标，路径导航一键开启，再隐蔽也能快速找到。</p>
+          </div>
+          <div class="glass-panel p-8 rounded-2xl glass-card transition-all flex flex-col items-center text-center">
+            <div class="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center text-3xl mb-6">📦</div>
+            <p class="text-xl font-bold text-white mb-3" data-i18n="hl-2-title">电子货架</p>
+            <p class="text-sm text-slate-400 leading-relaxed" data-i18n="hl-2-desc">库存状态一目了然，出发前就看准，有货再走，绝不当冤种。</p>
+          </div>
+          <div class="glass-panel p-8 rounded-2xl glass-card transition-all flex flex-col items-center text-center">
+            <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-3xl mb-6">💬</div>
+            <p class="text-xl font-bold text-white mb-3" data-i18n="hl-3-title">Do me a "flavor"</p>
+            <p class="text-sm text-slate-400 leading-relaxed" data-i18n="hl-3-desc">社区发帖、许愿上新，让运营小哥听到你的声音。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="feedback" class="relative glass-panel rounded-[40px] overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-brand/10 to-purple-500/10 opacity-50"></div>
+        
+        <div class="relative p-8 md:p-16 flex flex-col lg:flex-row items-center justify-between gap-10 text-center lg:text-left">
+          <div class="space-y-6 max-w-2xl">
+            <div>
+              <span class="px-3 py-1 rounded-full bg-brand/20 text-brand text-xs font-bold mb-4 inline-block">Beta Test</span>
+              <h2 class="text-3xl md:text-4xl font-bold text-white" data-i18n="fb-title">Alpha 版本求“找茬”</h2>
+            </div>
+            <p class="text-slate-300 text-lg leading-relaxed" data-i18n="fb-desc">
+              我们知道现在的版本可能还有点“脆皮”。你的每一次吐槽、每一个 Bug 反馈，都是帮我们把它变得更好的动力。
+            </p>
+            
+            <div class="flex flex-wrap justify-center lg:justify-start gap-3 text-sm text-slate-300">
+               <span class="px-3 py-1 rounded-full border border-white/10 hover:bg-white/5 transition" data-i18n="tag-bug">🐛 找bug有奖</span>
+               <span class="px-3 py-1 rounded-full border border-white/10 hover:bg-white/5 transition" data-i18n="tag-idea">💡 脑洞大开</span>
+               <span class="px-3 py-1 rounded-full border border-white/10 hover:bg-white/5 transition" data-i18n="tag-rant">🤐 疯狂吐槽</span>
+            </div>
+          </div>
+          
+          <div class="flex-shrink-0">
+            <a href="https://v.wjx.cn/vm/mB6yOvp.aspx" target="_blank" class="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-200 bg-brand font-lg rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand hover:bg-brandHover hover:shadow-glow hover:-translate-y-1">
+              <span data-i18n="btn-feedback">参与内测反馈</span>
+              <svg class="w-5 h-5 ml-2 -mr-1 transition-transform group-hover:translate-x-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <footer class="text-center border-t border-white/10 pt-12 pb-8">
+        <p class="text-slate-500 text-sm mb-4">
+          Made by <span class="text-slate-300">XJTLU Session4 Group22 “Go.2-Yuanqi Team”</span>
+        </p>
+        <div class="flex flex-col items-center gap-4">
+            <!-- GitHub Link in Footer -->
+            <a href="https://github.com/S0831/miniprogram-2_open" target="_blank" class="text-slate-500 hover:text-brand transition text-xs flex items-center gap-1">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>
+                View Source Code on GitHub
+            </a>
+
+            <div class="inline-block bg-amber-500/10 border border-amber-500/20 rounded-lg px-4 py-2 backdrop-blur-sm max-w-2xl">
+            <p class="text-xs text-amber-200/80">
+                ⚠️ <strong>Disclaimer:</strong> This is a student project for educational purposes only. Not affiliated with Genki Forest. 
+                <br />本项目当前为教学实践用途，并非商业应用。我们非常期待你的使用反馈，帮助我们不断完善！
+            </p>
+            </div>
+        </div>
+      </footer>
+
+    </div>
+
+    <!-- 翻译脚本逻辑 -->
+    <script>
+        const translations = {
+            'zh': {
+                'version': 'Go.2-Yuanqi Alpha',
+                'hero-title-1': '售货机“开盲盒”？',
+                'hero-title-2': '达咩！🙅',
+                'hero-subtitle': '先瞅一眼再冲，告别“大冤种”',
+                'hero-desc': '还在满 XJTLU 校园“随缘”找快乐水？Go.2-Yuanqi 让你秒看位置、甚至还能在线“许愿”你最想要的款。',
+                'btn-try': '抢先体验',
+                'btn-learn': '了解更多',
+                'step-title-1': '简单三步，',
+                'step-title-2': '拿回你的“零食自由”',
+                'step-desc': '不再为了一瓶水跑断腿，我们把主动权还给你～',
+                'card1-title': '锁定坐标',
+                'card1-desc': '不用再像无头苍蝇一样乱撞！地图一开，最近的机子在哪？统统一秒 get～',
+                'card2-title': '拒绝跑空',
+                'card2-desc': '出发前看一眼状态！想喝的饮料是否售罄？提前预知这台机子有没有你心仪的“味道”～',
+                'card3-title': '许愿上新',
+                'card3-desc': '入冬是否想喝香芋口味产品？直接 @ 我们，热门款必须给大家安排上！',
+                'about-us': '关于我们',
+                'about-title-1': '咱也是 XJTLU 的',
+                'about-title-2': '（梦幻联动了）',
+                'about-desc': '我们希望用技术提升校园的便利性，让自动售货机变得<span class="text-white font-semibold">更智能、更快捷、也更有趣～</span> Go.2-Yuanqi 是我们为此迈出的第一步。',
+                'highlight-title': '核心功能一图看懂',
+                'hl-1-title': '实时地图',
+                'hl-1-desc': '让购买更加便捷！锁定售货机坐标，路径导航一键开启，再隐蔽也能快速找到。',
+                'hl-2-title': '电子货架',
+                'hl-2-desc': '库存状态一目了然，出发前就看准，有货再走，绝不当冤种。',
+                'hl-3-title': 'Do me a "flavor"',
+                'hl-3-desc': '社区发帖、许愿上新，让运营小哥听到你的声音。',
+                'fb-title': 'Alpha 版本求“找茬”',
+                'fb-desc': '我们知道现在的版本可能还有点“脆皮”。你的每一次吐槽、每一个 Bug 反馈，都是帮我们把它变得更好的动力。',
+                'tag-bug': '🐛 找bug有奖',
+                'tag-idea': '💡 脑洞大开',
+                'tag-rant': '🤐 疯狂吐槽',
+                'btn-feedback': '参与内测反馈'
+            },
+            'en': {
+                'version': 'Go.2-Yuanqi Alpha',
+                'hero-title-1': 'Vending Machine "Blind Box"?',
+                'hero-title-2': 'No Way! 🙅',
+                'hero-subtitle': 'Check stock first, say goodbye to wasted trips.',
+                'hero-desc': 'Still wandering around XJTLU campus looking for drinks? Go.2-Yuanqi lets you check locations instantly and even "wish" for your favorite snacks online.',
+                'btn-try': 'Try It Now',
+                'btn-learn': 'Learn More',
+                'step-title-1': 'Three Simple Steps',
+                'step-title-2': 'Reclaim Your "Snack Freedom"',
+                'step-desc': 'Stop running around for a bottle of water. We give the control back to you~',
+                'card1-title': 'Locate Instantly',
+                'card1-desc': 'No more aimless searching! Open the map and find the nearest machine in a second.',
+                'card2-title': 'No More Empty Runs',
+                'card2-desc': 'Check status before you go! Is your drink sold out? Know in advance if the machine has your favorite "flavor".',
+                'card3-title': 'Wish for New Items',
+                'card3-desc': 'Want taro flavored drinks for winter? Just @ us, and we will arrange the popular items for you!',
+                'about-us': 'About Us',
+                'about-title-1': 'We are XJTLUers too',
+                'about-title-2': '(Dream Collab)',
+                'about-desc': 'We hope to use technology to improve campus convenience, making vending machines <span class="text-white font-semibold">smarter, faster, and more fun~</span> Go.2-Yuanqi is our first step.',
+                'highlight-title': 'Feature Highlights',
+                'hl-1-title': 'Real-time Map',
+                'hl-1-desc': 'Make buying easier! Lock on vending machine coordinates, start navigation, and find even the hidden ones quickly.',
+                'hl-2-title': 'Digital Shelf',
+                'hl-2-desc': 'Inventory status at a glance. Check before you go, ensure it\'s in stock, and never waste a trip.',
+                'hl-3-title': 'Do me a "flavor"',
+                'hl-3-desc': 'Post in the community, wish for new items, and let the operators hear your voice.',
+                'fb-title': 'Alpha Version Feedback',
+                'fb-desc': 'We know the current version might be a bit "fragile". Every complaint and bug report from you is the motivation for us to make it better.',
+                'tag-bug': '🐛 Bug Bounty',
+                'tag-idea': '💡 Bright Ideas',
+                'tag-rant': '🤐 Roast Us',
+                'btn-feedback': 'Join Beta Test'
+            }
+        };
+
+        let currentLang = 'zh';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            updateContent();
+            updateButtonState();
+        }
+
+        function updateContent() {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    el.innerHTML = translations[currentLang][key];
+                }
+            });
+        }
+
+        function updateButtonState() {
+            const langText = document.getElementById('lang-text');
+            if (currentLang === 'zh') {
+                langText.textContent = "EN / 中文"; // Current is Chinese, offer switch to English visually implies toggle
+            } else {
+                langText.textContent = "中文 / EN";
+            }
+        }
+    </script>
+  </body>
+</html>
