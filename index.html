@@ -15,10 +15,12 @@
               brand: '#00C29A', 
               brandHover: '#00A885',
               midnight: '#0F172A',
+              appBg: '#F5F7FA', // App背景色
             },
             boxShadow: {
               glow: '0 0 40px rgba(0, 194, 154, 0.3)',
               card: '0 8px 32px 0 rgba(0, 0, 0, 0.3)',
+              appCard: '0 4px 12px rgba(0,0,0,0.03)', // App内部卡片阴影
             },
             animation: {
               'float': 'float 6s ease-in-out infinite',
@@ -36,7 +38,7 @@
       };
     </script>
     <style>
-      /* 自定义滚动条 */
+      /* 全局滚动条 */
       ::-webkit-scrollbar { width: 8px; }
       ::-webkit-scrollbar-track { background: #0F172A; }
       ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
@@ -69,6 +71,14 @@
         top: 20px;
         right: 20px;
         z-index: 50;
+      }
+      
+      /* 手机壳样式优化 */
+      .iphone-bezel {
+        box-shadow: 
+          0 0 0 4px #1f2937, /* 外框深色 */
+          0 0 0 7px #374151, /* 外框浅色 */
+          0 20px 50px -10px rgba(0,0,0,0.5); /* 投影 */
       }
     </style>
   </head>
@@ -163,24 +173,135 @@
         <div class="relative order-1 md:order-2 flex justify-center">
           <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-brand/20 rounded-full blur-[60px] -z-10"></div>
           
-          <div class="device-shell transform rotate-[-2deg] hover:rotate-0 transition duration-500">
-            <div class="device-notch"></div>
-            <div class="device-screen relative bg-gray-900 overflow-y-auto hide-scrollbar">
-                <!-- 这里的图片路径保持不变 -->
-                <img src="./long-screenshot.jpg" alt="App Interface" class="w-full h-auto" />
-              </div>
-              
-              <style>
-                /* 隐藏手机屏幕内的滚动条，看起来更像原生App */
-                .hide-scrollbar::-webkit-scrollbar {
-                  display: none;
-                }
-                .hide-scrollbar {
-                  -ms-overflow-style: none;
-                  scrollbar-width: none;
-                }
-              </style>
+          <!-- 手机外壳容器 -->
+          <div class="device-shell iphone-bezel bg-midnight w-[320px] h-[650px] rounded-[48px] relative border-8 border-gray-800 overflow-hidden transform rotate-[-2deg] hover:rotate-0 transition duration-500">
+            
+            <!-- 灵动岛/刘海 -->
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[120px] h-[32px] bg-black rounded-b-[18px] z-30 flex items-center justify-center gap-2">
+               <!-- 听筒和摄像头装饰 -->
+               <div class="w-16 h-1.5 bg-gray-800 rounded-full opacity-50"></div>
+               <div class="w-2 h-2 bg-blue-900/50 rounded-full"></div>
             </div>
+
+            <!-- 手机屏幕（可滚动区域） -->
+            <div class="device-screen relative bg-[#F5F7FA] w-full h-full overflow-y-auto hide-scrollbar text-slate-800 font-sans">
+                
+                <!-- 顶部状态栏占位 -->
+                <div class="h-10 w-full bg-[#F5F7FA] sticky top-0 z-20"></div>
+
+                <!-- 屏幕内容：还原截图 -->
+                <div class="px-5 pb-24 space-y-4">
+                    
+                    <!-- 标题区 -->
+                    <div class="pt-2">
+                        <h2 class="text-2xl font-black text-slate-900 leading-tight">
+                            <span data-i18n="app-title-1">扫码开启</span><br/>
+                            <span data-i18n="app-title-2">元气~</span>
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-2 leading-relaxed" data-i18n="app-subtitle">
+                            覆盖西浦太仓校区所有智能冰柜。一次登录，全校通行，随时随地补充能量。
+                        </p>
+                    </div>
+
+                    <!-- 绿色大按钮 -->
+                    <div class="bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-2xl p-6 shadow-lg shadow-emerald-200 text-center text-white cursor-pointer hover:shadow-emerald-300 hover:scale-[1.02] transition-all">
+                        <h3 class="text-xl font-bold tracking-wide" data-i18n="app-btn-main">微信扫码一键解锁</h3>
+                        <p class="text-xs text-emerald-100 mt-1 opacity-90" data-i18n="app-btn-sub">快速开门 · 实时结算</p>
+                    </div>
+
+                    <!-- 访客模式卡片 -->
+                    <div class="bg-white rounded-2xl p-5 shadow-appCard text-center cursor-pointer hover:bg-slate-50 transition">
+                        <h3 class="font-bold text-slate-800 text-lg" data-i18n="app-guest-title">访客模式浏览库存</h3>
+                        <p class="text-xs text-slate-400 mt-1" data-i18n="app-guest-sub">先逛逛校园售货机</p>
+                    </div>
+
+                    <!-- 双列卡片 -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <!-- 位置卡片 -->
+                        <div class="bg-white rounded-2xl p-4 shadow-appCard flex flex-col justify-between h-28">
+                            <span class="text-[10px] text-slate-400" data-i18n="app-card-loc-label">当前售货机</span>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-base leading-tight" data-i18n="app-card-loc-name">图书馆 E栋</h4>
+                                <div class="flex gap-1 mt-2 flex-wrap">
+                                    <span class="text-[9px] bg-blue-50 text-blue-500 px-1.5 py-0.5 rounded" data-i18n="tag-lowsugar">低糖专区</span>
+                                    <span class="text-[9px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">24h</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 元气值卡片 -->
+                        <div class="bg-white rounded-2xl p-4 shadow-appCard flex flex-col justify-between h-28 items-center text-center">
+                            <span class="text-[10px] text-slate-400 w-full text-left" data-i18n="app-card-points-label">我的元气值</span>
+                            <span class="text-3xl font-black text-emerald-500">139</span>
+                            <span class="text-[9px] text-slate-400" data-i18n="app-card-points-desc">签到 + 购买累计</span>
+                        </div>
+                    </div>
+
+                    <!-- 步骤说明区 -->
+                    <div class="bg-white rounded-2xl p-5 shadow-appCard">
+                        <div class="mb-4">
+                            <p class="text-[10px] text-slate-400 uppercase tracking-wider">QUICK START</p>
+                            <h3 class="font-bold text-slate-800 text-lg" data-i18n="app-steps-title">三步开启校园售货体验</h3>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <!-- Step 1 -->
+                            <div class="flex gap-3">
+                                <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-800" data-i18n="app-step1-title">扫码，即刻开门</h4>
+                                    <p class="text-[10px] text-slate-400 mt-0.5 leading-snug" data-i18n="app-step1-desc">对准冰柜屏幕扫码，门锁自动为你弹开</p>
+                                </div>
+                            </div>
+                            <!-- Step 2 -->
+                            <div class="flex gap-3">
+                                <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-800" data-i18n="app-step2-title">智能开门，选择商品</h4>
+                                    <p class="text-[10px] text-slate-400 mt-0.5 leading-snug" data-i18n="app-step2-desc">拿上你想要的，关上门，系统自动识别结算</p>
+                                </div>
+                            </div>
+                            <!-- Step 3 -->
+                            <div class="flex gap-3">
+                                <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold flex-shrink-0">3</div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-800" data-i18n="app-step3-title">分享最爱，玩转社区</h4>
+                                    <p class="text-[10px] text-slate-400 mt-0.5 leading-snug" data-i18n="app-step3-desc">快去 Do me a "flavor" 社区为你“心水”的商品点赞吧</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部校区选择 -->
+                    <div class="bg-white rounded-2xl p-5 shadow-appCard relative overflow-hidden">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-[10px] text-slate-400" data-i18n="app-campus-label">校区选择</p>
+                                <h3 class="font-bold text-slate-800 text-lg mt-1 leading-tight" data-i18n="app-campus-name">西交利物浦大学<br/>· 太仓校区</h3>
+                            </div>
+                            <span class="text-[9px] bg-indigo-50 text-indigo-500 px-2 py-1 rounded font-bold">Auto Sync</span>
+                        </div>
+                        
+                        <!-- 底部露出的卡片装饰 -->
+                        <div class="mt-4 flex gap-2 overflow-hidden opacity-50 grayscale">
+                            <div class="bg-emerald-50 text-emerald-600 text-[10px] px-2 py-1 rounded whitespace-nowrap">图书馆E栋</div>
+                            <div class="bg-orange-50 text-orange-600 text-[10px] px-2 py-1 rounded whitespace-nowrap">宿舍2号楼</div>
+                            <div class="bg-blue-50 text-blue-600 text-[10px] px-2 py-1 rounded whitespace-nowrap">教学楼C栋</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+            <style>
+              /* 隐藏手机屏幕内的滚动条，但保留滚动功能 */
+              .hide-scrollbar::-webkit-scrollbar {
+                display: none;
+              }
+              .hide-scrollbar {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+              }
+            </style>
           </div>
         </div>
       </section>
@@ -322,7 +443,30 @@
                 'tag-bug': '🐛 找bug有奖',
                 'tag-idea': '💡 脑洞大开',
                 'tag-rant': '🤐 疯狂吐槽',
-                'btn-feedback': '参与内测反馈'
+                'btn-feedback': '参与内测反馈',
+                
+                // APP Screen Text - New!
+                'app-title-1': '扫码开启',
+                'app-title-2': '元气~',
+                'app-subtitle': '覆盖西浦太仓校区所有智能冰柜。一次登录，全校通行，随时随地补充能量。',
+                'app-btn-main': '微信扫码一键解锁',
+                'app-btn-sub': '快速开门 · 实时结算',
+                'app-guest-title': '访客模式浏览库存',
+                'app-guest-sub': '先逛逛校园售货机',
+                'app-card-loc-label': '当前售货机',
+                'app-card-loc-name': '图书馆 E栋',
+                'tag-lowsugar': '低糖专区',
+                'app-card-points-label': '我的元气值',
+                'app-card-points-desc': '签到 + 购买累计',
+                'app-steps-title': '三步开启校园售货体验',
+                'app-step1-title': '扫码，即刻开门',
+                'app-step1-desc': '对准冰柜屏幕扫码，门锁自动为你弹开',
+                'app-step2-title': '智能开门，选择商品',
+                'app-step2-desc': '拿上你想要的，关上门，系统自动识别结算',
+                'app-step3-title': '分享最爱，玩转社区',
+                'app-step3-desc': '快去 Do me a "flavor" 社区为你“心水”的商品点赞吧',
+                'app-campus-label': '校区选择',
+                'app-campus-name': '西交利物浦大学<br/>· 太仓校区',
             },
             'en': {
                 'version': 'Go.2-Yuanqi Alpha',
@@ -357,7 +501,30 @@
                 'tag-bug': '🐛 Bug Bounty',
                 'tag-idea': '💡 Bright Ideas',
                 'tag-rant': '🤐 Roast Us',
-                'btn-feedback': 'Join Beta Test'
+                'btn-feedback': 'Join Beta Test',
+                
+                // APP Screen Text - Translated
+                'app-title-1': 'Scan to',
+                'app-title-2': 'Energize~',
+                'app-subtitle': 'Covering all smart fridges in XJTLU Taicang. One login, access everywhere.',
+                'app-btn-main': 'Unlock via WeChat',
+                'app-btn-sub': 'Fast Access · Real-time Payment',
+                'app-guest-title': 'Guest Mode: Browse',
+                'app-guest-sub': 'Check out the machines first',
+                'app-card-loc-label': 'Current Machine',
+                'app-card-loc-name': 'Library Bldg E',
+                'tag-lowsugar': 'Low Sugar',
+                'app-card-points-label': 'My Energy Points',
+                'app-card-points-desc': 'Check-in + Purchases',
+                'app-steps-title': '3 Steps to Start',
+                'app-step1-title': 'Scan to Open',
+                'app-step1-desc': 'Scan the screen code, the door opens automatically',
+                'app-step2-title': 'Pick Your Items',
+                'app-step2-desc': 'Grab what you want, close the door, auto-settlement',
+                'app-step3-title': 'Share & Play',
+                'app-step3-desc': 'Like your favorite items in the "Do me a flavor" community',
+                'app-campus-label': 'Campus Selection',
+                'app-campus-name': 'XJTLU<br/>· Taicang Campus',
             }
         };
 
@@ -382,7 +549,7 @@
         function updateButtonState() {
             const langText = document.getElementById('lang-text');
             if (currentLang === 'zh') {
-                langText.textContent = "EN / 中文"; // Current is Chinese, offer switch to English visually implies toggle
+                langText.textContent = "EN / 中文";
             } else {
                 langText.textContent = "中文 / EN";
             }
